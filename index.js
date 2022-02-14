@@ -100,7 +100,7 @@ const run = async () => {
     if (project.psComponents) {
       console.log(chalk.yellow("Adding Zengenti Forms Package..."));
       exec(
-        `cd ${project.directory} && npm install --save --package-lock-only --no-package-lock zengenti-forms-package`,
+        `cd ${project.directory} && npm install --save --package-lock-only zengenti-forms-package`,
         (error, stderr) => {
           if (error) {
             console.log(`error: ${error.message}`);
@@ -122,7 +122,7 @@ const run = async () => {
     if (project.psComponents) {
       console.log(chalk.yellow("Adding PS Component Library..."));
       exec(
-        `cd ${project.directory} && npm install --save --package-lock-only --no-package-lock zengenti-ps-components`,
+        `cd ${project.directory} && npm install --save --package-lock-only zengenti-ps-components`,
         (error, stderr) => {
           if (error) {
             console.log(`error: ${error.message}`);
