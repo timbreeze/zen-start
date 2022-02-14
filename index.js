@@ -34,9 +34,9 @@ const run = async () => {
       fs.writeFileSync(package, JSON.stringify(file), function writeJSON(err) {
         if (err) return console.log(err);
       });
-      console.log(
-        chalk.bgGreen(`Successfully wrote ${project.name} to package.json!`)
-      );
+      // console.log(
+      //   chalk.bgGreen(`Successfully wrote ${project.name} to package.json!`)
+      // );
     };
 
     const packageRepositoryURL = async () => {
@@ -49,11 +49,11 @@ const run = async () => {
       fs.writeFileSync(package, JSON.stringify(file), function writeJSON(err) {
         if (err) return console.log(err);
       });
-      console.log(
-        chalk.bgGreen(
-          `Successfully wrote ${project.repositoryURL} to package.json!`
-        )
-      );
+      // console.log(
+      //   chalk.bgGreen(
+      //     `Successfully wrote ${project.repositoryURL} to package.json!`
+      //   )
+      // );
     };
 
     packageName().then(packageRepositoryURL());
@@ -69,30 +69,74 @@ const run = async () => {
       if (err) return console.log(err);
     });
 
-    console.log(chalk.bgGreen(`Successfully wrote to .env file!`));
+    // console.log(chalk.bgGreen(`Successfully wrote to .env file!`));
   };
 
+  // const setForms = async () => {
+  //   if (project.forms === true) {
+  //     console.log(
+  //       chalk.yellow(`Writing "zengenti-forms-package" to package.json...`)
+  //     );
+
+  //     const package = `./${project.directory}/package.json`;
+  //     const file = require(package);
+
+  //     file.dependencies["zengenti-forms-package"] = "^2.0.0-beta.2";
+
+  //     fs.writeFileSync(package, JSON.stringify(file), function writeJSON(err) {
+  //       if (err) return console.log(err);
+  //     });
+  //     console.log(
+  //       chalk.bgGreen(
+  //         `Successfully wrote "zengenti-forms-package" to package.json!`
+  //       )
+  //     );
+  //   } else {
+  //     console.log(chalk.yellow(`Forms module not required.`));
+  //   }
+  // };
+
   const setForms = async () => {
-    if (project.forms === true) {
-      console.log(
-        chalk.yellow(`Writing "zengenti-forms-package" to package.json...`)
+    if (project.psComponents) {
+      console.log(chalk.yellow("Adding Zengenti Forms Package..."));
+      exec(
+        `cd ${project.directory} && npm install --save --package-lock-only --no-package-lock zengenti-forms-package`,
+        (error, stderr) => {
+          if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+          }
+
+          if (stderr) {
+            // console.log(`stderr: ${stderr}`);
+            return;
+          }
+
+          // console.log(chalk.bgGreen("Zengenti Forms Package added!"));
+        }
       );
+    }
+  };
 
-      const package = `./${project.directory}/package.json`;
-      const file = require(package);
+  const setPSComponents = async () => {
+    if (project.psComponents) {
+      console.log(chalk.yellow("Adding PS Component Library..."));
+      exec(
+        `cd ${project.directory} && npm install --save --package-lock-only --no-package-lock zengenti-ps-components`,
+        (error, stderr) => {
+          if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+          }
 
-      file.dependencies["zengenti-forms-package"] = "^2.0.0-beta.2";
+          if (stderr) {
+            // console.log(`stderr: ${stderr}`);
+            return;
+          }
 
-      fs.writeFileSync(package, JSON.stringify(file), function writeJSON(err) {
-        if (err) return console.log(err);
-      });
-      console.log(
-        chalk.bgGreen(
-          `Successfully wrote "zengenti-forms-package" to package.json!`
-        )
+          // console.log(chalk.bgGreen("PS Component Library added!"));
+        }
       );
-    } else {
-      console.log(chalk.yellow(`Forms module not required.`));
     }
   };
 
@@ -107,10 +151,10 @@ const run = async () => {
             return;
           }
           if (stderr) {
-            console.log(`stderr: ${stderr}`);
+            // console.log(`stderr: ${stderr}`);
             return;
           }
-          console.log(chalk.bgGreen("Removed Composer from project."));
+          // console.log(chalk.bgGreen("Removed Composer from project."));
         }
       );
     }
@@ -126,15 +170,9 @@ const run = async () => {
       }
 
       if (stderr) {
-        console.log(`stderr: ${stderr}`);
+        // console.log(`stderr: ${stderr}`);
         return;
       }
-
-      console.log(
-        chalk.bgGreen(
-          "Install complete! Run `npm run start` to begin development."
-        )
-      );
     });
   };
 
@@ -155,8 +193,11 @@ const run = async () => {
       await setPackage();
       await setENV();
       await setForms();
+      await setPSComponents();
       await setComposer();
       await finishBuild();
+
+      console.log(chalk.bgGreen("Install complete!"));
     } catch (e) {
       console.log("Error!", e);
     }
@@ -164,4 +205,5 @@ const run = async () => {
 
   build();
 };
+
 run();
