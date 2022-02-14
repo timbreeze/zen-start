@@ -116,17 +116,20 @@ const run = async () => {
     }
   };
 
-  const finish = async () => {
+  const finishBuild = async () => {
     console.log(chalk.yellow("Installing react-starter..."));
-    exec(`cd ${project.directory} && npm i`, (error, stderr) => {
+
+    exec(`cd ${project.directory} && rm -rf .git`, (error, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
         return;
       }
+
       if (stderr) {
         console.log(`stderr: ${stderr}`);
         return;
       }
+
       console.log(
         chalk.bgGreen(
           "Install complete! Run `npm run start` to begin development."
@@ -140,16 +143,20 @@ const run = async () => {
       console.log(
         chalk.yellow(`Cloning react-starter to ${project.directory}...`)
       );
+
       await git.clone(defaultRepo, project.directory);
+
       console.log(
         chalk.bgGreen(
           `Successfully cloned react-starter to ${project.directory}!`
         )
       );
-      setPackage()
-        .then(setENV())
-        .then(setForms())
-        .then(setComposer().then(finish()));
+
+      await setPackage();
+      await setENV();
+      await setForms();
+      await setComposer();
+      await finishBuild();
     } catch (e) {
       console.log("Error!", e);
     }
